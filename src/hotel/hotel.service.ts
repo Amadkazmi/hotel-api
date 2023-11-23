@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Hotel } from './schemas/hotel.schema';
 import * as mongoose from 'mongoose';
+import { User } from '../auth/schemas/user.schema';
 
 @Injectable()
 export class HotelService {
@@ -14,8 +15,10 @@ export class HotelService {
         const hotels = await this.hotelModel.find();
         return hotels;
     }
-    async create(hotel: Hotel) : Promise<Hotel> {
-        const res = await this.hotelModel.create(hotel);
+    async create(hotel: Hotel , user:User) : Promise<Hotel> {
+
+        const data = Object.assign(hotel, {user: user._id})
+        const res = await this.hotelModel.create(data);
         return res;
     }
     async findById(id: string) : Promise<Hotel>{
